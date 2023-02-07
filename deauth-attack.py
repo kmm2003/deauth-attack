@@ -28,7 +28,7 @@ def auth(iface: str, ap: str, station: str):
     
 def asso(iface: str, ap: str, station: str):
   dot11 = Dot11(addr1=ap, addr2=station, addr3=ap)
-  frame = RadioTap()/dot11/Dot11AssoReq(cap=0x1100, listen_interval=0x00a)/Dot11Elt(ID=0, info="MY_BSSID")
+  frame = RadioTap()/dot11/Dot11AssoReq(cap=0x1100, listen_interval=0x00a)/Dot11Elt(ID=0, info="MY_BSSID") # Modify cap value after packet verification
   sendp(frame, iface=iface, loop=10,inter=0.00100)
 
 if __name__ == "__main__":
